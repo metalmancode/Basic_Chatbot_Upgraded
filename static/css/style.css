@@ -152,6 +152,12 @@ input[type="range"] {
     border-bottom-left-radius: 4px;
 }
 
+.bot-message.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+}
+
 .user-message {
     align-self: flex-end;
     background: var(--accent);

@@ -95,9 +95,15 @@
 
                 const data = await response.json();
                 loadingMsg.remove();
-                addMessage(data.response, 'bot-message');
+
+                if (data.error) {
+                    addMessage(data.error, 'bot-message error');
+                } else {
+                    addMessage(data.response, 'bot-message');
+                }
             } catch (err) {
-                loadingMsg.textContent = "Error: Could not connect to the model.";
+                loadingMsg.remove();
+                addMessage("Connection Error: The server is not responding. Please make sure the Flask app is running.", 'bot-message error');
             }
         }
 

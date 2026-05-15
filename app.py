@@ -30,62 +30,69 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     global conversation_history
-    data = request.json
-    user_input = data.get("message")
-    
-    # Get parameters from UI
-    temperature = float(data.get("temperature", 0.5))
-    top_p = float(data.get("top_p", 0.8))
-    max_new_tokens = int(data.get("max_tokens", 60))
-    system_prompt = data.get("system_prompt", "You are a helpful AI assistant.")
+    try:
+        data = request.json
+        user_input = data.get("message")
+        
+        # Get parameters from UI
+        temperature = float(data.get("temperature", 0.5))
+        top_p = float(data.get("top_p", 0.8))
+        max_new_tokens = int(data.get("max_tokens", 60))
+        system_prompt = data.get("system_prompt", "You are a helpful AI assistant.")
 
-    # Reset history if requested or if system prompt changed
-    if data.get("reset"):
-        conversation_history = [{"role": "system", "content": system_prompt}]
-    
-    # Update system prompt if it's different
-    if conversation_history[0]["content"] != system_prompt:
-        conversation_history[0]["content"] = system_prompt
+        # Reset history if requested or if system prompt changed
+        if data.get("reset"):
+            conversation_history = [{"role": "system", "content": system_prompt}]
+            return jsonify({"response": "History cleared."})
+        
+        # Update system prompt if it's different
+        if not conversation_history or conversation_history[0]["content"] != system_prompt:
+            conversation_history = [{"role": "system", "content": system_prompt}]
 
-    # Add user message
-    conversation_history.append({"role": "user", "content": user_input})
-    
-    # Keep context window
-    context = [conversation_history[0]] + conversation_history[-10:]
+        # Add user message
+        conversation_history.append({"role": "user", "content": user_input})
+        
+        # Keep context window
+        context = [conversation_history[0]] + conversation_history[-10:]
 
-    # Apply template
-    tokenized = tokenizer.apply_chat_template(
-        context,
-        tokenize=True,
-        add_generation_prompt=True,
-        return_tensors="pt",
-        return_dict=True,
-        max_length=512
-    )
-
-    # Generate
-    with torch.inference_mode():
-        outputs = model.generate(
-            tokenized["input_ids"],
-            attention_mask=tokenized["attention_mask"],
-            max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            top_p=top_p,
-            do_sample=True,
-            repetition_penalty=1.3,
-            no_repeat_ngram_size=3,
-            pad_token_id=tokenizer.pad_token_id
+        # Apply template
+        tokenized = tokenizer.apply_chat_template(
+            context,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt",
+            return_dict=True,
+            max_length=512
         )
 
-    response = tokenizer.decode(
-        outputs[0][tokenized["input_ids"].shape[-1]:],
-        skip_special_tokens=True
-    ).strip()
+        # Generate
+        with torch.inference_mode():
+            outputs = model.generate(
+                tokenized["input_ids"],
+                attention_mask=tokenized["attention_mask"],
+                max_new_tokens=max_new_tokens,
+                temperature=temperature,
+                top_p=top_p,
+                do_sample=True,
+                repetition_penalty=1.3,
+                no_repeat_ngram_size=3,
+                pad_token_id=tokenizer.pad_token_id
+            )
 
-    # Save assistant response
-    conversation_history.append({"role": "assistant", "content": response})
+        response = tokenizer.decode(
+            outputs[0][tokenized["input_ids"].shape[-1]:],
+            skip_special_tokens=True
+        ).strip()
 
-    return jsonify({"response": response})
+        # Save assistant response
+        conversation_history.append({"role": "assistant", "content": response})
+
+        return jsonify({"response": response})
+
+    except Exception as e:
+        print(f"Error during generation: {str(e)}")
+        return jsonify({"error": "The AI encountered an issue generating a response. Please try again or check your settings."}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=False)
