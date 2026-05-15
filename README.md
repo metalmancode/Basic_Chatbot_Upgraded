@@ -1,79 +1,105 @@
-# Basic AI Chatbot using Transformers
+# AI Chatbot Pro - Upgraded (SmolLM2 + Flask)
 
-A lightweight, terminal-based chatbot built with Python and Hugging Face's `transformers` library. This project uses the **Blenderbot-400M-distill** model, which is optimized for natural dialogue and can run efficiently on a CPU.
+A state-of-the-art, web-based conversational AI application built with **SmolLM2-360M-Instruct** and **Flask**. This project represents an "Upgraded" version of the basic transformer chatbot, featuring a premium web interface, dynamic parameter tuning, and advanced error handling.
 
-## 🚀 Features
+## 🌟 Key Features
 
-- **Open Source LLM**: Powered by Facebook's Blenderbot.
-- **Contextual Memory**: Remembers the last few exchanges to provide coherent responses.
-- **Natural Generation**: Uses sampling, temperature control, and repetition penalties for human-like conversation.
-- **CPU Optimized**: Lightweight enough to run without a high-end GPU.
-- **Virtual Environment Ready**: Easy to set up and run in an isolated environment.
+### 1. Modern Causal LLM
+- **Model**: `HuggingFaceTB/SmolLM2-360M-Instruct`.
+- **Architecture**: A compact but powerful instruction-tuned causal language model.
+- **Chat Templates**: Automatically handles system, user, and assistant roles using the model's native template format.
+
+### 2. Premium Web Interface
+- **Glassmorphism UI**: A sleek, dark-mode design built with modern CSS.
+- **Dynamic Control Sidebar**: Adjust AI parameters (Temperature, Top P, Max Tokens) in real-time.
+- **Responsive Design**: Works perfectly across different screen sizes.
+
+### 3. Robust Error Handling
+- **Backend Protection**: Python `try-except` blocks ensure the server stays up even during model generation errors.
+- **User-Friendly Alerts**: Custom UI components to inform users about connection issues or generation failures.
+
+### 4. Context Management
+- **Sliding Window Memory**: Keeps the last 10 exchanges for context-aware replies without overwhelming the model's token limit.
+
+---
 
 ## 🛠️ Technology Stack
 
-- **Python 3.x**
-- **Transformers**: For loading the model and tokenizer.
-- **PyTorch**: Backend for model execution.
-- **NumPy**: Data handling.
+- **Backend**: Python, Flask, PyTorch
+- **AI Library**: Hugging Face Transformers
+- **Frontend**: HTML5, Vanilla CSS3 (Glassmorphism), JavaScript (ES6+)
+- **Model Engine**: SmolLM2 (CPU Optimized)
 
-## 📋 Prerequisites
-
-Ensure you have Python installed. It is recommended to use a virtual environment.
+---
 
 ## ⚙️ Installation & Setup
 
+### 📋 Prerequisites
+- Python 3.8+
+- Git
+
+### 🚀 Step-by-Step Installation
+
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/metalmancode/basic_chatbot.git
-   cd basic_chatbot
+   git clone https://github.com/metalmancode/Basic_Chatbot_Upgraded.git
+   cd Basic_Chatbot_Upgraded
    ```
 
-2. **Create a virtual environment**:
+2. **Set up a Virtual Environment**:
    ```bash
-   python3 -m venv my_env
-   source my_env/bin/activate  # On Windows use: my_env\Scripts\activate
+   python3 -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies**:
+3. **Install Dependencies**:
    ```bash
-   pip install transformers torch numpy accelerate
+   pip install -r requirements.txt
    ```
 
-## 🏃 Usage
+---
 
-Run the chatbot using the following command:
+## 🏃 Running the Application
 
+### 1. Web Interface (Recommended)
+Run the Flask server:
 ```bash
-python chatbot.py
+python app.py
 ```
+Open [http://127.0.0.1:5001](http://127.0.0.1:5001) in your browser.
 
-- Type your message at the `>` prompt.
-- Type `exit` to end the conversation.
-
-## 🤖 Upgraded Version: Modern LLM Chatbot (SmolLM2)
-
-The upgraded version (`chatbot_llm.py`) uses **SmolLM2-360M-Instruct**, a state-of-the-art causal language model. This version introduces **Chat Templates**, which handle the complex formatting of "system", "user", and "assistant" roles automatically.
-
-### Key Upgrades:
-- **Causal LLM**: Uses `AutoModelForCausalLM` for superior reasoning and text generation.
-- **System Prompting**: Allows defining the bot's behavior (e.g., "be concise").
-- **Chat Templates**: Uses `tokenizer.apply_chat_template` to format messages correctly for the model.
-- **Inference Mode**: Optimized with `torch.inference_mode()` for faster CPU performance.
-
-## 🏃 Running the Upgraded Bot
-
+### 2. Terminal Mode
+If you prefer a lightweight terminal experience:
 ```bash
 python chatbot_llm.py
 ```
 
-## 🧠 How the Upgraded Bot Works
+---
 
-1. **Structured Messages**: Uses a list of dictionaries with `role` and `content`.
-2. **Template Application**: Converts messages into a single string with special tokens that the model was trained on.
-3. **Selective Decoding**: Only decodes the newly generated tokens, ensuring the bot doesn't repeat the user's input.
+## 🧠 Advanced Configuration
 
+### Understanding the Parameters
+- **System Prompt**: Set the "personality" of the bot. Tell it to be "concise", "creative", or a "professional assistant".
+- **Temperature (0.1 - 1.5)**: 
+  - Lower (e.g., 0.2): More predictable and factual.
+  - Higher (e.g., 0.8): More creative and diverse.
+- **Top P (0.1 - 1.0)**: Nucleus sampling; keeps the cumulative probability of word choices within a certain range.
+- **Max Tokens**: Limits the length of the bot's response.
+
+---
+
+## 🔧 Troubleshooting & Error Handling
+
+- **Connection Error**: Ensure the Flask server is running in your terminal.
+- **Generation Error**: If the bot returns a red error message, try lowering the `Max Tokens` or clicking "Clear History" to reset the context window.
+- **Slow Responses**: Since this runs on the CPU, generation speed depends on your local hardware. Close other resource-heavy apps for better performance.
+
+---
 
 ## 📝 License
+This project is open-source and available under the **MIT License**.
 
-This project is open-source and available under the MIT License.
+---
+
+## 👨‍💻 Author
+Developed by **metalmancode**.
