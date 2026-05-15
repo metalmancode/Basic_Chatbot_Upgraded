@@ -51,16 +51,28 @@ python chatbot.py
 - Type your message at the `>` prompt.
 - Type `exit` to end the conversation.
 
-## 🧠 How It Works
+## 🤖 Upgraded Version: Modern LLM Chatbot (SmolLM2)
 
-1. **Model Selection**: Uses `facebook/blenderbot-400M-distill`, a sequence-to-sequence model fine-tuned for conversation.
-2. **Tokenization**: The `AutoTokenizer` converts user text into numerical tokens that the model understands.
-3. **Prompt Engineering**: The script combines conversation history with the new user input, formatted with `User:` and `Bot:` labels to guide the model.
-4. **Generation Parameters**:
-   - `max_new_tokens=60`: Limits response length.
-   - `temperature=0.6`: Balances creativity and coherence.
-   - `repetition_penalty=1.3`: Prevents the bot from repeating the same words.
-5. **Context Window**: Keeps the last 6 exchanges to maintain relevant context without exceeding token limits.
+The upgraded version (`chatbot_llm.py`) uses **SmolLM2-360M-Instruct**, a state-of-the-art causal language model. This version introduces **Chat Templates**, which handle the complex formatting of "system", "user", and "assistant" roles automatically.
+
+### Key Upgrades:
+- **Causal LLM**: Uses `AutoModelForCausalLM` for superior reasoning and text generation.
+- **System Prompting**: Allows defining the bot's behavior (e.g., "be concise").
+- **Chat Templates**: Uses `tokenizer.apply_chat_template` to format messages correctly for the model.
+- **Inference Mode**: Optimized with `torch.inference_mode()` for faster CPU performance.
+
+## 🏃 Running the Upgraded Bot
+
+```bash
+python chatbot_llm.py
+```
+
+## 🧠 How the Upgraded Bot Works
+
+1. **Structured Messages**: Uses a list of dictionaries with `role` and `content`.
+2. **Template Application**: Converts messages into a single string with special tokens that the model was trained on.
+3. **Selective Decoding**: Only decodes the newly generated tokens, ensuring the bot doesn't repeat the user's input.
+
 
 ## 📝 License
 
